@@ -6,6 +6,8 @@ console.event = event;
 
 
 async function forwardRequest(req, res) {
+		const path = req.path.replace('/v1/v1', '/v1');
+	
 		if (!OPENAI_CONFIG.BASE_URL && !OPENAI_CONFIG.KEY) {
 			return sendServerError(res, 'All proxies are down, please try again later.');
 		}
@@ -20,7 +22,7 @@ async function forwardRequest(req, res) {
     try {
         const axiosConfig = {
             method: req.method,
-            url: `${OPENAI_CONFIG.BASE_URL}${req.path}`,
+            url: `${OPENAI_CONFIG.BASE_URL}${path}`,
             responseType: req?.body?.stream ? 'stream' : ''
         };
 
