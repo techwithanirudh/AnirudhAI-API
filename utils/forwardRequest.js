@@ -6,6 +6,10 @@ console.event = event;
 
 
 async function forwardRequest(req, res) {
+		if (!OPENAI_CONFIG.BASE_URL && !OPENAI_CONFIG.KEY) {
+			return sendServerError(res, 'All proxies are down, please try again later.');
+		}
+	
     if (req?.body?.prompt) {
         console.event('QUESTION', req?.body?.prompt);
     } else if (req?.body?.messages) {
@@ -70,10 +74,10 @@ async function handleOpenAIError(error, req, res) {
 	}
 }
 
-function sendServerError(res) {
+function sendServerError(res, message) {
 	res.status(500).send({
 		status: false,
-		error: "Something Went Wrong!"
+		error: message | "Something Went Wrong!"
 	});
 }
 

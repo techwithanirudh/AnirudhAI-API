@@ -22,7 +22,7 @@ process.on("uncaughtException", function(err) {
 
 // Middlewares
 const limiter = rateLimit({
-	windowMs: WINDOW_MS, // 15 minutes
+	windowMs: WINDOW_MS, // 15 seconds
 	max: RATE_LIMIT,
 	standardHeaders: true,
 	legacyHeaders: false
@@ -53,10 +53,11 @@ app.all("/", async function(req, res) {
 });
 app.all("/v1/*", forwardRequest);
 
-// Update proxy to best proxy
-updateCurrentProxy();
-
 // Start the Express server
 app.listen(SERVER_PORT, () => {
+	// Update proxy to best proxy
+	updateCurrentProxy();
+
+	// Listening
 	console.event('SRV_START', `Server is listening on port ${SERVER_PORT}`);
 });

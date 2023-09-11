@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { event } from "./logging.js";
-import { PROXIES, OPENAI_CONFIG, TIMEOUT_DURATION } from "../config/index.js";
+import { PROXIES, OPENAI_CONFIG, TIMEOUT_DURATION, UPDATE_INTERVAL, RETRY_INTERVAL } from "../config/index.js";
 
 console.event = event;
 
@@ -8,7 +8,7 @@ async function testProxy(proxy) {
 	const openai = new OpenAI({
 		apiKey: proxy.key,
 		baseURL: proxy.baseURL + '/v1/',
-		timeout: TIMEOUT_DURATION,
+		timeout: 1000,
 	});
 
 	const startTime = Date.now(); // Start the timer
@@ -60,8 +60,14 @@ export async function updateCurrentProxy() {
 		OPENAI_CONFIG.BASE_URL = fastestProxy.baseURL;
 		OPENAI_CONFIG.KEY = fastestProxy.key;
 		console.event('PROXY_UPDATED', OPENAI_CONFIG.BASE_URL);
+	} else {
+		OPENAI_CONFIG.BASE_URL = '';
+		OPENAI_CONFIG.KEY = '';
+		
+		console.event('REFETCHING_IN', `${RETRY_INTERVAL / (60 * 1000)}m`)
+		setTimeout(updateCurrentProxy, RETRY_INTERVAL); 
 	}
 }
 
-// Schedule the Proxy Update
-setInterval(updateCurrentProxy, 15 * 60 * 1000); // 15 minutes in milliseconds
+// Schedule the Proxy Update using the interval from the config file
+setInterval(updateCurrentProxy, UPDATE_INTERVAL);

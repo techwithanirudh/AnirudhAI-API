@@ -13,12 +13,16 @@ const PROXIES = [
 ]
 
 export const OPENAI_CONFIG = {
-  BASE_URL: PROXIES[0].baseURL,
-  KEY: PROXIES[0].key
+	BASE_URL: PROXIES[0].baseURL,
+	KEY: PROXIES[0].key
 };
 
 // Timeout
 export const TIMEOUT_DURATION = 20 * 1000;
+
+// Update interval
+export const UPDATE_INTERVAL = 15 * 60 * 1000; // 15 minutes in milliseconds
+export const RETRY_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 // Blacklist
 export const IP_BLACKLIST = []
@@ -33,9 +37,10 @@ export const EVENT_CONF = {
 	ANSWERED: 'green',
 	OPENAI_ERR: 'red',
 	PROXY_ERR: 'red',
+	REFETCHING_IN: 'blue',
 	hidden: [
-		"PROXY_TESTED",
-		"PROXY_ERR",
+		// "PROXY_TESTED",
+		// "PROXY_ERR",
 		// "PROXY_UPDATED"
 	]
 };
