@@ -8,7 +8,7 @@ async function testProxy(proxy) {
 	const openai = new OpenAI({
 		apiKey: proxy.key,
 		baseURL: proxy.baseURL + '/v1/',
-		timeout: 1000,
+		timeout: TIMEOUT_DURATION,
 	});
 
 	const startTime = Date.now(); // Start the timer
