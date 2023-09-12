@@ -1,46 +1,26 @@
-// Server configuration
-export const SERVER_PORT = 3000; // Server port
+let config;
 
-// Rate limit
-export const WINDOW_MS = 15 * 1000; // 15 seconds
-export const RATE_LIMIT = 50; // 50 requests per 15 seconds
+// Check if index.local.js exists and use it, otherwise use the template
+try {
+    config = await import('./index.local.js');
+} catch (error) {
+    console.warn("Local configuration file (index.local.js) not found. Using default template.");
+    config = await import('./index.template.js');
+}
 
-// OpenAI Configuration
-const PROXIES = [
-	// Add your proxies below.
-	// Example:
-	{ baseURL: "https://api.openai.com", key: "sk-123" }
-]
+// TESTING: Sensitive Data
+// config = { baseURL: 'https://api.openai.com', key: 'sk-123' }
 
-export const OPENAI_CONFIG = {
-	BASE_URL: PROXIES[0].baseURL,
-	KEY: PROXIES[0].key
-};
-
-// Timeout
-export const TIMEOUT_DURATION = 45 * 1000;
-
-// Update interval
-export const UPDATE_INTERVAL = 15 * 60 * 1000; // 15 minutes in milliseconds
-export const RETRY_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
-
-// Blacklist
-export const IP_BLACKLIST = []
-
-// Logging
-export const EVENT_CONF = {
-	SRV_START: 'blue',
-	PATH: 'yellow',
-	QUESTION: 'blue',
-	PROXY_TESTED: 'yellow',
-	PROXY_UPDATED: 'blue',
-	ANSWERED: 'green',
-	OPENAI_ERR: 'red',
-	PROXY_ERR: 'red',
-	REFETCHING_IN: 'blue',
-	hidden: [
-		// "PROXY_TESTED",
-		// "PROXY_ERR",
-		// "PROXY_UPDATED"
-	]
-};
+// Export all properties from the chosen config
+export const { 
+    SERVER_PORT, 
+    WINDOW_MS, 
+    RATE_LIMIT, 
+    PROXIES, 
+    OPENAI_CONFIG, 
+    TIMEOUT_DURATION, 
+    UPDATE_INTERVAL, 
+    RETRY_INTERVAL, 
+    IP_BLACKLIST, 
+    EVENT_CONF 
+} = config;

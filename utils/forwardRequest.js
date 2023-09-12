@@ -69,7 +69,7 @@ async function handleOpenAIError(error, req, res) {
 				console.event("PARSE_ERR", "Could not JSON parse stream message", error);
 				sendServerError(res);
 			}
-		} catch (e) {
+		} catch (e) {	
 			console.event('UNKNOWN_ERR', e);
 			sendServerError(res);
 		}

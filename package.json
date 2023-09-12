@@ -27,5 +27,13 @@
     "readline-sync": "^1.4.10",
     "strip-ansi": "^7.1.0",
     "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
+  },
+	"husky": {
+    "hooks": {
+      "pre-commit": "node scripts/validate.js"
+    }
   }
 }
