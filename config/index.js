@@ -8,9 +8,6 @@ try {
     config = await import('./index.template.js');
 }
 
-// TESTING: Sensitive Data
-// config = { baseURL: 'https://api.openai.com', key: 'sk-123' }
-
 // Export all properties from the chosen config
 export const { 
     SERVER_PORT, 
