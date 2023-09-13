@@ -1,6 +1,12 @@
 import OpenAI from "openai";
+import { resolve } from 'path'
+import { fileURLToPath } from 'url'
 import { event } from "./logging.js";
 import { PROXIES, OPENAI_CONFIG, TIMEOUT_DURATION, UPDATE_INTERVAL, RETRY_INTERVAL } from "../config/index.js";
+
+const __filename = resolve(fileURLToPath(import.meta.url))
+const __nodePath = resolve(process.argv[1])
+const __cli = __filename.includes(__nodePath)
 
 console.event = event;
 
@@ -71,3 +77,5 @@ export async function updateCurrentProxy() {
 
 // Schedule the Proxy Update using the interval from the config file
 setInterval(updateCurrentProxy, UPDATE_INTERVAL);
+
+if (__cli) updateCurrentProxy(); // If the script is being run from the CLI, update the proxy immediately

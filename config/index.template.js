@@ -25,6 +25,12 @@ export const RETRY_INTERVAL = 5 * 60 * 1000;
 // Blacklist
 export const IP_BLACKLIST = [];
 
+// Error handling
+export const ERROR_MESSAGE_ALL_PROXIES_DOWN = 'All proxies are down, please try again later.';
+export const ERROR_MESSAGE_GENERIC = "Something Went Wrong!";
+export const ERROR_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+export const ERROR_COUNT_THRESHOLD = 5; // Number of errors allowed within ERROR_DURATION
+
 // Logging
 export const EVENT_CONF = {
     SRV_START: 'blue',
@@ -35,6 +41,11 @@ export const EVENT_CONF = {
     ANSWERED: 'green',
     OPENAI_ERR: 'red',
     PROXY_ERR: 'red',
+		API_ERR: 'red',
     REFETCHING_IN: 'blue',
-    hidden: []
+    hidden: [
+			// "PROXY_TESTED",
+			// "PROXY_ERR",
+			// "PROXY_UPDATED"
+		]
 };

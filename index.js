@@ -51,6 +51,10 @@ app.use(async (req, res, next) => {
 app.all("/", async function(req, res) {
 	return res.sendStatus(200);
 });
+app.all("/update", async function (req, res) {
+	await updateCurrentProxy();
+	return res.status(200).send('Update successful, AnirudhGPT API should be stable now.')
+});
 app.all("/v1/*", forwardRequest);
 
 // Start the Express server
