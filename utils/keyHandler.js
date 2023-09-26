@@ -31,6 +31,11 @@ export function keyLimiter(req, res, next) {
   const keys = JSON.parse(readFileSync("./keys.json", "utf-8"));
   const key = getKey(req.headers);
 
-  if (!keys[key]?.active) return res.sendStatus(401);
+  if (!keys[key]?.active)
+    return res
+      .status(401)
+      .send(
+        "Invalid API key, please contact the administrator, for a API Key.",
+      );
   next();
 }

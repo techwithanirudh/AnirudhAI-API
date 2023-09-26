@@ -32,14 +32,15 @@ async function forwardRequest(req, res) {
       method: req.method,
       url: `${OPENAI_CONFIG.BASE_URL}${path}`,
       responseType: req.body.stream ? "stream" : "",
-    };
-
-    if (["POST", "PUT", "PATCH"].includes(req.method.toUpperCase())) {
-      axiosConfig.data = req.body;
-      axiosConfig.headers = {
+      cookies: req.cookies,
+      headers: {
         authorization: `Bearer ${OPENAI_CONFIG.KEY}`,
         host: new URL(OPENAI_CONFIG.BASE_URL).host,
-      };
+      },
+    };
+
+    if (req.body) {
+      axiosConfig.data = req.body;
     }
 
     const response = await axios(axiosConfig);
