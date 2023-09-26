@@ -1,6 +1,7 @@
 # AnirudhGPT-API
 
 ## Overview
+
 AnirudhGPT-API is a free implementation of OpenAI's GPT-3.5-turbo model. It leverages multiple reverse proxies to optimize response times and provide a seamless experience. This project is built using Express.js and offers a range of utilities to manage requests, logging, and proxy testing.
 
 🚨 **For Educational Purposes Only**: This project is intended solely for educational and research purposes. Please ensure you adhere to OpenAI's usage policies and guidelines when deploying or using this API.
@@ -25,4 +26,5 @@ AnirudhGPT-API is a free implementation of OpenAI's GPT-3.5-turbo model. It leve
 4. Launch the server using `node index.js`.
 
 ## Note
+
 Ensure you have the required API keys and configurations for the proxies you plan to use.
