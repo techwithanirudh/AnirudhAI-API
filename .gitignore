@@ -131,3 +131,9 @@ dist
 
 # config
 config/index.local.js
+
+# keys
+keys.json
+
+# cert
+certs/
