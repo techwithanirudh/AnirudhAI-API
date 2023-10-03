@@ -66,16 +66,22 @@ app.use(limiter);
 if (ENABLE_KEY_SYSTEM) app.use("/v1", keyLimiter);
 
 app.use(async (req, res, next) => {
-  if (getKey(req.headers)) {
-    console.event(
-      req.method,
-      `${req.path} - ${getKeyInfo(req.headers)['name']} - ${req.ip}`,
-    );
-  } else {
-    console.event(req.method, `${req.path} - ${req.ip}`);
+  const keyInfo = getKeyInfo(req.headers);
+  let logMessage = `${req.path} - ${req.ip}`;
+
+  if (keyInfo) {
+    if (typeof keyInfo === 'string') {
+      logMessage = `UNKNOWN_KEY - ${req.path} - ${keyInfo} - ${req.ip}`;
+    } else if (keyInfo['name']) {
+      logMessage = `${req.path} - ${keyInfo['name']} - ${req.ip}`;
+    }
   }
+
+  console.event(req.method, logMessage);
+  
   next();
 });
+
 
 // Register routes
 app.all("/", async function (req, res) {
