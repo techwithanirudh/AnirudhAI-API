@@ -8,6 +8,7 @@ import express, { json, urlencoded } from "express";
 import {
   forwardRequest,
   getKey,
+  getKeyInfo,
   handleWhitelist,
   keyLimiter,
 } from "./utils/index.js";
@@ -68,7 +69,7 @@ app.use(async (req, res, next) => {
   if (getKey(req.headers)) {
     console.event(
       req.method,
-      `${req.path} - ${getKey(req.headers)} - ${req.ip}`,
+      `${req.path} - ${getKeyInfo(req.headers)['name']} - ${req.ip}`,
     );
   } else {
     console.event(req.method, `${req.path} - ${req.ip}`);

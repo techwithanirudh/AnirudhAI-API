@@ -27,6 +27,13 @@ export function getKey(headers) {
   return headers?.authorization?.split(" ")[1] || "";
 }
 
+export function getKeyInfo(headers) {
+	const keys = JSON.parse(readFileSync("./keys.json", "utf-8"));
+  const key = getKey(headers);
+
+	return keys[key];
+}
+
 export function keyLimiter(req, res, next) {
   const keys = JSON.parse(readFileSync("./keys.json", "utf-8"));
   const key = getKey(req.headers);
