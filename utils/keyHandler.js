@@ -24,14 +24,17 @@ export function handleWhitelist(req) {
 }
 
 export function getKey(headers) {
-  return headers?.authorization?.split(" ")[1] || "";
+  const authorization = headers?.authorization || "";
+  const [, token] = authorization.split(" ");
+  
+  return token;
 }
 
 export function getKeyInfo(headers) {
-	const keys = JSON.parse(readFileSync("./keys.json", "utf-8"));
+  const keys = JSON.parse(readFileSync('./keys.json', 'utf-8'));
   const key = getKey(headers);
 
-	return keys[key];
+  return keys[key] || key;
 }
 
 export function keyLimiter(req, res, next) {
