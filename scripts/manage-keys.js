@@ -23,12 +23,31 @@ const loadKeys = () => {
     }
 };
 
-const getKeyById = (id, keys) => {
-    return Object.keys(keys).find(key => keys[key].id === id);
-};
-
 const saveKeys = (keys) => {
     fs.writeFileSync('keys.json', JSON.stringify(keys, null, 2));
+};
+
+const orderKeysById = (keys) => {
+    const sortedEntries = Object.entries(keys).sort((a, b) => parseInt(a[1].id, 10) - parseInt(b[1].id, 10));
+    const reorderedKeys = {};
+    for (const [key, value] of sortedEntries) {
+        reorderedKeys[key] = value;
+    }
+    return reorderedKeys;
+};
+
+const cleanupKeys = (keys) => {
+    keys = orderKeysById(keys);
+    let idCounter = 1;
+    for (const key in keys) {
+        keys[key].id = idCounter.toString();
+        idCounter++;
+    }
+    return keys;
+};
+
+const getKeyById = (id, keys) => {
+    return Object.keys(keys).find(key => keys[key].id === id);
 };
 
 const getNextId = (keys) => {
@@ -42,20 +61,22 @@ const generateKey = () => {
 };
 
 const addKey = (name) => {
-    const keys = loadKeys();
+    let keys = loadKeys();
     const id = getNextId(keys);
     const key = generateKey();
     keys[key] = { name, id, active: true };
+    keys = cleanupKeys(keys);
     saveKeys(keys);
     console.log(chalk.green(`Key added successfully! Key: ${key}, ID: ${id}`));
     askToContinue();
 };
 
 const deleteKey = (input) => {
-    const keys = loadKeys();
+    let keys = loadKeys();
     const key = keys[input] ? input : getKeyById(input, keys);
     if (key) {
         delete keys[key];
+        keys = cleanupKeys(keys);  // Reorder the IDs after a key has been deleted
         saveKeys(keys);
         console.log(chalk.green(`Key ${key} deleted successfully!`));
     } else {
@@ -90,6 +111,23 @@ const renameKey = (input, newName) => {
     askToContinue();
 };
 
+const regenerateKey = (input) => {
+    let keys = loadKeys();
+    const key = keys[input] ? input : getKeyById(input, keys);
+    if (key) {
+        const oldKeyData = keys[key];
+        const newKey = generateKey();
+        keys[newKey] = oldKeyData;
+        delete keys[key];
+        keys = cleanupKeys(keys);
+        saveKeys(keys);
+        console.log(chalk.green(`Key ${key} regenerated successfully to ${newKey}!`));
+    } else {
+        console.log(chalk.red(`No key or id found for ${input}.`));
+    }
+    askToContinue();
+};
+
 const listKeys = () => {
     const keys = loadKeys();
     if (Object.keys(keys).length === 0) {
@@ -111,7 +149,8 @@ const showOptions = () => {
     console.log('3. Disable key');
     console.log('4. Rename key');
     console.log('5. List keys');
-    rl.question(chalk.yellow('Select an option (1-5): '), handleOption);
+    console.log('6. Regenerate key');
+    rl.question(chalk.yellow('Select an option (1-6): '), handleOption);
 };
 
 const handleOption = (option) => {
@@ -135,6 +174,9 @@ const handleOption = (option) => {
             break;
         case '5':
             listKeys();
+            break;
+        case '6':
+            rl.question(chalk.yellow('Enter the key or id to regenerate: '), regenerateKey);
             break;
         default:
             console.log(chalk.red('Invalid option.'));
