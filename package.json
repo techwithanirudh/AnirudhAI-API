@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "b:start": "bun index.js"
+    "b:start": "bun index.js",
+		"manage-keys": "node scripts/manage-keys.js"
   },
   "keywords": [],
   "author": "",

@@ -45,7 +45,7 @@ export function keyLimiter(req, res, next) {
     return res
       .status(401)
       .send(
-        "Invalid API key, please contact the administrator, for a API Key.",
+        "Your API key is not valid. Please reach out to the administrator to obtain a valid API Key. If you've already requested one, kindly wait for its activation for production use.",
       );
   next();
 }
