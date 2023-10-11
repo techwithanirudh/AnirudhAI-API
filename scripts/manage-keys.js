@@ -9,6 +9,10 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+const clearConsole = () => {
+    console.clear();
+};
+
 const loadKeys = () => {
     try {
         const data = fs.readFileSync('keys.json', 'utf8');
@@ -44,18 +48,20 @@ const addKey = (name) => {
     keys[key] = { name, id, active: true };
     saveKeys(keys);
     console.log(chalk.green(`Key added successfully! Key: ${key}, ID: ${id}`));
+    askToContinue();
 };
 
-const revokeKey = (input) => {
+const deleteKey = (input) => {
     const keys = loadKeys();
     const key = keys[input] ? input : getKeyById(input, keys);
     if (key) {
         delete keys[key];
         saveKeys(keys);
-        console.log(chalk.green(`Key ${key} revoked successfully!`));
+        console.log(chalk.green(`Key ${key} deleted successfully!`));
     } else {
         console.log(chalk.red(`No key or id found for ${input}.`));
     }
+    askToContinue();
 };
 
 const disableKey = (input) => {
@@ -68,6 +74,7 @@ const disableKey = (input) => {
     } else {
         console.log(chalk.red(`No key or id found for ${input}.`));
     }
+    askToContinue();
 };
 
 const renameKey = (input, newName) => {
@@ -80,41 +87,72 @@ const renameKey = (input, newName) => {
     } else {
         console.log(chalk.red(`No key or id found for ${input}.`));
     }
+    askToContinue();
 };
 
-console.log(chalk.cyan('Welcome to Manage Keys for AnirudhGPT API'));
-rl.question(chalk.yellow('Do you want to add, revoke, disable, or rename a key? '), (action) => {
-    action = stripAnsi(action);
-    switch (action.toLowerCase()) {
-        case 'add':
-            rl.question(chalk.yellow('Enter the name for the new key: '), (name) => {
-                addKey(name);
-                rl.close();
-            });
+const listKeys = () => {
+    const keys = loadKeys();
+    if (Object.keys(keys).length === 0) {
+        console.log(chalk.yellow('No keys found.'));
+    } else {
+        console.log(chalk.cyan('List of keys:'));
+        for (const key in keys) {
+            const { name, id, active } = keys[key];
+            console.log(`${key} - Name: ${name}, ID: ${id}, Active: ${active ? 'Yes' : 'No'}`);
+        }
+    }
+    askToContinue();
+};
+
+const showOptions = () => {
+    console.log(chalk.cyan('Welcome to Manage Keys for AnirudhGPT API'));
+    console.log('1. Add key');
+    console.log('2. Delete key');
+    console.log('3. Disable key');
+    console.log('4. Rename key');
+    console.log('5. List keys');
+    rl.question(chalk.yellow('Select an option (1-5): '), handleOption);
+};
+
+const handleOption = (option) => {
+    option = stripAnsi(option);
+    switch (option) {
+        case '1':
+            rl.question(chalk.yellow('Enter the name for the new key: '), addKey);
             break;
-        case 'revoke':
-            rl.question(chalk.yellow('Enter the key or id to revoke: '), (input) => {
-                revokeKey(input);
-                rl.close();
-            });
+        case '2':
+            rl.question(chalk.yellow('Enter the key or id to delete: '), deleteKey);
             break;
-        case 'disable':
-            rl.question(chalk.yellow('Enter the key or id to disable: '), (input) => {
-                disableKey(input);
-                rl.close();
-            });
+        case '3':
+            rl.question(chalk.yellow('Enter the key or id to disable: '), disableKey);
             break;
-        case 'rename':
+        case '4':
             rl.question(chalk.yellow('Enter the key or id to rename: '), (input) => {
                 rl.question(chalk.yellow('Enter the new name: '), (newName) => {
                     renameKey(input, newName);
-                    rl.close();
                 });
             });
             break;
+        case '5':
+            listKeys();
+            break;
         default:
-            console.log(chalk.red('Invalid action'));
-            rl.close();
+            console.log(chalk.red('Invalid option.'));
+            askToContinue();
             break;
     }
-});
+};
+
+const askToContinue = () => {
+    rl.question(chalk.yellow('Are you done? (yes/no) '), (answer) => {
+        if (answer.toLowerCase() === 'no') {
+            clearConsole();
+            showOptions();
+        } else {
+            console.log(chalk.green('Goodbye!'));
+            rl.close();
+        }
+    });
+};
+
+showOptions();
