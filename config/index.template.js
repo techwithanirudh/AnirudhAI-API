@@ -12,6 +12,9 @@ export const WINDOW_MS = 60 * 1000; // 1 minute in milliseconds
 export const RATE_LIMIT = 20;
 export const NO_RATELIMIT_IPS = [];
 
+// Max error length
+export const MAX_ERROR_LENGTH = 100; // You can adjust this length as needed
+
 // OpenAI Configuration
 export const PROXIES = [
   // Add your proxies here

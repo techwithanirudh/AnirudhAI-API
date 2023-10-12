@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { EVENT_CONF } from "../config/index.js";
+import { EVENT_CONF, MAX_ERROR_LENGTH } from "../config/index.js";
 import winston from "winston";
 import stripAnsi from "strip-ansi";
 
@@ -42,4 +42,17 @@ const event = (evtname, ...args) => {
   logger.info(logMessage);
 };
 
-export { event };
+
+const truncateError = (error) => {
+  if (typeof error !== 'string') {
+    error = String(error);
+  }
+  
+  if (error.length > MAX_ERROR_LENGTH) {
+    return error.slice(0, MAX_ERROR_LENGTH) + "...";
+  }
+  
+  return error;
+}
+
+export { event, truncateError };

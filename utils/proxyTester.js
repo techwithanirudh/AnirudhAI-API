@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { event } from "./logging.js";
+import { event, truncateError } from "./logging.js";
 import {
   PROXIES,
   OPENAI_CONFIG,
@@ -7,8 +7,16 @@ import {
   UPDATE_INTERVAL,
   RETRY_INTERVAL,
 } from "../config/index.js";
+import { readFileSync } from 'fs';
 
 console.event = event;
+
+const questions = JSON.parse(readFileSync('data/questions.json', 'utf8'));
+
+function getRandomQuestion() {
+  const randomIndex = Math.floor(Math.random() * questions.length);
+  return questions[randomIndex];
+}
 
 async function testProxy(proxy) {
   const openai = new OpenAI({
@@ -17,18 +25,18 @@ async function testProxy(proxy) {
     timeout: TIMEOUT_DURATION,
   });
 
-  const startTime = Date.now(); // Start the timer
-
+  const startTime = Date.now(); 
+	const currentQuestion = getRandomQuestion();
+	
   try {
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: "Who won the world cup in 2018?" },
+        { role: "system", content: "You are a helpful assistant. You answer in five words." },
+        { role: "user", content: currentQuestion },
       ],
     });
 
-    // Check if the chatCompletion response is valid
     if (
       !chatCompletion ||
       !chatCompletion.choices ||
@@ -50,9 +58,9 @@ async function testProxy(proxy) {
     }
 
     const duration = Date.now() - startTime; // Calculate the duration
-    return { isValid: true, duration }; // Return the duration along with validity
+    return { isValid: true, duration, content: chatCompletion.choices[0].message.content }; // Return the duration along with validity
   } catch (error) {
-    console.event("PROXY_ERR", proxy.baseURL);
+    console.event("PROXY_ERR", truncateError(error), proxy.baseURL);
     return { isValid: false };
   }
 }
@@ -62,9 +70,9 @@ export async function updateCurrentProxy() {
   let minDuration = Infinity;
 
   for (const proxy of PROXIES) {
-    const { isValid, duration } = await testProxy(proxy);
+    const { isValid, duration, content } = await testProxy(proxy);
     if (isValid) {
-      console.event("PROXY_TESTED", proxy.baseURL, duration);
+      console.event("PROXY_TESTED", proxy.baseURL, duration, content);
       if (duration < minDuration) {
         minDuration = duration;
         fastestProxy = proxy;
