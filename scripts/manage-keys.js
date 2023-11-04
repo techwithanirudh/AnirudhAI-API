@@ -143,7 +143,7 @@ const listKeys = () => {
 };
 
 const showOptions = () => {
-    console.log(chalk.cyan('Welcome to Manage Keys for AnirudhGPT API'));
+    console.log(chalk.cyan('Welcome to Manage Keys for AnirudhAI API'));
     console.log('1. Add key');
     console.log('2. Delete key');
     console.log('3. Disable key');

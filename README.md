@@ -1,8 +1,8 @@
-# AnirudhGPT-API
+# AnirudhAI-API
 
 ## Overview
 
-AnirudhGPT-API is designed to offer a stable and optimized experience when interacting with language models like OpenAI's GPT-3.5 and GPT-4. Built on Express.js, this project aims to provide a reliable interface for OpenAI's API, with the added capability of using reverse proxies for potentially free access. Users are fully responsible for how they use this feature.
+AnirudhAI-API is designed to offer a stable and optimized experience when interacting with language models like OpenAI's GPT-3.5 and GPT-4. Built on Express.js, this project aims to provide a reliable interface for OpenAI's API, with the added capability of using reverse proxies for potentially free access. Users are fully responsible for how they use this feature.
 
 🚨 **Compliance and Legal Notice**: This project can be configured for both free and paid access to OpenAI's API. Users are solely responsible for adhering to OpenAI's terms of service. Illegal use is strictly prohibited.
 

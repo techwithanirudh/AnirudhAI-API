@@ -26,7 +26,7 @@ export const OPENAI_CONFIG = {
 };
 
 // Timeout
-export const TIMEOUT_DURATION = 45 * 1000;
+export const TIMEOUT_DURATION = 20 * 1000;
 
 // Update interval
 export const UPDATE_INTERVAL = 15 * 60 * 1000;
