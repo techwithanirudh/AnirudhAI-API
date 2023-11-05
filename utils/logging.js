@@ -3,7 +3,11 @@ import { EVENT_CONF, MAX_ERROR_LENGTH } from "../config/index.js";
 import winston from "winston";
 import stripAnsi from "strip-ansi";
 
-// Create a logger instance and configure it
+import { Logtail }  from "@logtail/node"
+import { LogtailTransport } from "@logtail/winston";
+
+const logtail = new Logtail(process.env.LOGTAIL_TOKEN);
+
 const logger = winston.createLogger({
   level: "info", // You can adjust the log level as needed
   format: winston.format.combine(
@@ -27,6 +31,12 @@ const logger = winston.createLogger({
         return `${timestamp} ${messageWithoutColors}`;
       }),
     }),
+		new LogtailTransport(logtail, {
+		  format: winston.format.printf(({ level, message }) => {
+		    const messageWithoutColors = stripAnsi(message);
+		    return messageWithoutColors;
+		  }),
+		})
   ],
 });
 

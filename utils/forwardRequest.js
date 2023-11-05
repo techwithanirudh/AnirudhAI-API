@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 import { event } from "./logging.js";
 import {
   OPENAI_CONFIG,
@@ -14,6 +15,7 @@ console.event = event;
 let errorTimestamps = [];
 
 async function forwardRequest(req, res) {
+  const requestId = uuidv4(); // Generate a unique ID for the request
   const path = req.path.replace("/v1/v1", "/v1");
 
   if (!OPENAI_CONFIG.BASE_URL && !OPENAI_CONFIG.KEY) {
@@ -48,7 +50,36 @@ async function forwardRequest(req, res) {
     if (req.body.stream) {
       res.setHeader("content-type", "text/event-stream");
       response.data.pipe(res);
+      
+      if (path === "/v1/chat/completions" || path === "/v1/completions") {
+        let answer = '';
+        const jsonRegex = /data: (.*?)(\n|$)/g;
+        
+        for await (const chunk of response.data) {
+          const chunkString = chunk.toString();
+          let match;
+          while ((match = jsonRegex.exec(chunkString)) !== null) {
+            if (match[1] !== '[DONE]') {
+              const parsedChunk = JSON.parse(match[1]);
+              if (parsedChunk.choices && parsedChunk.choices[0] && parsedChunk.choices[0].delta && parsedChunk.choices[0].delta.content) {
+                answer += parsedChunk.choices[0].delta.content;
+              }
+            }
+          }
+        }
+
+        console.event("ANSWER", answer);
+      }
     } else {
+      const completion = response.data;
+      if (path === "/v1/chat/completions") {
+        const text = completion.choices[0].message.content;
+        console.event('ANSWER', text);
+      } else if (path === "/v1/completions") {
+        const text = completion.choices[0].text;
+        console.event('ANSWER', text);
+      }
+      
       res.status(response.status).send(response.data);
     }
   } catch (error) {
