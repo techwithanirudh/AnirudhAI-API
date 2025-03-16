@@ -1,5 +1,8 @@
 # AnirudhAI-API
 
+> [!WARNING]  
+> This project is not actively maintained. It is recommended to use alternatives like [LiteLLM](https://www.litellm.ai/), which provides a similar experience. 
+
 ## Overview
 
 AnirudhAI-API is designed to offer a stable and optimized experience when interacting with language models like OpenAI's GPT-3.5 and GPT-4. Built on Express.js, this project aims to provide a reliable interface for OpenAI's API, with the added capability of using reverse proxies for potentially free access. Users are fully responsible for how they use this feature.
